@@ -13,11 +13,13 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 
-RUN cp .env.example .env || true
-RUN php artisan key:generate
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
+# Crear .env y generar key correctamente
+RUN if [ ! -f .env ]; then cp .env.example .env; fi
+RUN php artisan key:generate --force
+
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
 
 EXPOSE 8080
 
