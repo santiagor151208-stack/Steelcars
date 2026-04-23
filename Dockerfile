@@ -1,4 +1,4 @@
-FROM php:8.4-fpm
+FROM php:8.4-cli
 
 RUN apt-get update && apt-get install -y \
     git curl libpng-dev libonig-dev libxml2-dev zip unzip libzip-dev libicu-dev
@@ -13,9 +13,13 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 
-# Crear .env y generar key correctamente
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# Crear .env con DEBUG activado
+RUN cp .env.example .env
 RUN php artisan key:generate --force
+
+# Forzar debug para ver errores
+RUN echo "APP_DEBUG=true" >> .env
+RUN echo "APP_ENV=local" >> .env
 
 RUN php artisan config:cache
 RUN php artisan route:cache
