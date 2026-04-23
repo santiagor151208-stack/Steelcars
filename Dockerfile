@@ -25,4 +25,9 @@ RUN php artisan config:cache
 RUN php artisan route:cache
 RUN php artisan view:cache
 
-CMD bash -c "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8080"
+# Configurar nginx
+RUN cp nginx.conf /etc/nginx/sites-enabled/default
+
+EXPOSE 8080
+
+CMD bash -c "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"
