@@ -1,6 +1,5 @@
 FROM php:8.4-fpm
 
-# Instalar extensiones necesarias
 RUN apt-get update && apt-get install -y \
     git curl libpng-dev libonig-dev libxml2-dev zip unzip libzip-dev libicu-dev
 
@@ -12,18 +11,13 @@ WORKDIR /app
 
 COPY . .
 
-# Actualizar composer.lock para PHP 8.4
-RUN composer update --ignore-platform-req=php
+RUN composer install --optimize-autoloader --no-dev
 
-# Instalar dependencias
-RUN composer install --optimize-autoloader --no-dev --ignore-platform-req=php
-
-# Crear .env y generar key
-RUN cp .env.example .env
+RUN cp .env.example .env || true
 RUN php artisan key:generate
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+RUN php artisan config:cache || true
+RUN php artisan route:cache || true
+RUN php artisan view:cache || true
 
 EXPOSE 8080
 
