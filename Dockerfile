@@ -13,17 +13,8 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 
-# Crear .env con DEBUG activado
-RUN cp .env.example .env
+# No crear .env aún, usaremos variables de Railway directamente
 RUN php artisan key:generate --force
-
-# Forzar debug para ver errores
-RUN echo "APP_DEBUG=true" >> .env
-RUN echo "APP_ENV=local" >> .env
-
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
 
 EXPOSE 8080
 
