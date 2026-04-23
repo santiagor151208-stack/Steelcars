@@ -13,8 +13,13 @@ WORKDIR /app
 
 COPY . .
 
+# Crear .env desde .env.example si no existe
+RUN cp .env.example .env
+
+# Instalar dependencias
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
+# Generar key y caché
 RUN php artisan key:generate
 RUN php artisan config:cache
 RUN php artisan route:cache
