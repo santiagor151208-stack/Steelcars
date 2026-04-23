@@ -11,10 +11,11 @@ WORKDIR /app
 
 COPY . .
 
-RUN composer install --optimize-autoloader --no-dev
-
-# No crear .env aún, usaremos variables de Railway directamente
+# Crear .env temporal para generar key
+RUN touch .env
 RUN php artisan key:generate --force
+
+RUN composer install --optimize-autoloader --no-dev
 
 EXPOSE 8080
 
